@@ -14,7 +14,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/body-parser": "^1.16.8",
+    "@types/method-override": "0.0.31",
+    "@types/mongoose": "^4.7.28",
+    "@types/pug": "^2.0.4",
+    "@types/request": "^2.0.8",
+    "body-parser": "^1.18.2",
     "express": "4.15.3",
+    "method-override": "^2.3.10",
+    "mongoose": "^4.13.6",
     "nodemon": "1.11.0"
   },
   "devDependencies": {
