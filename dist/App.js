@@ -5,12 +5,14 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
+const passport = require("passport");
+const passportLocal = require("passport-local");
 const environment_1 = require("./environment");
-const routes_1 = require("./routes");
+const LocalStrategy = passportLocal.Strategy;
 class App {
     constructor() {
         this.express = express();
-        if (environment_1.default.name === 'development') {
+        if (environment_1.environment.name === 'development') {
             this.express.use((req, res, next) => {
                 res.setHeader('Access-Control-Allow-Origin', '*');
                 res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -22,10 +24,14 @@ class App {
         this.express.use(bodyParser.json());
         this.express.use(methodOverride('X-HTTP-Method-Override'));
         this.express.use(express.static(path.join(__dirname, '..', 'dist')));
-        this.express.use('/', routes_1.default);
-        mongoose.connect(environment_1.default.mongoUrl);
-        this.db = mongoose.connection;
-        this.db.on('open', this.open);
+        // Configure passport middleware
+        this.express.use(passport.initialize());
+        this.express.use(passport.session());
+        // Configure router
+        // this.express.use('/', router);
+        this.db = mongoose.createConnection(environment_1.environment.mongoUrl);
+        // Configure mongodb
+        this.db.on('openUri', this.open);
         this.db.on('error', this.error);
     }
     open() {

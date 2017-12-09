@@ -1,6 +1,6 @@
 import { Environment } from './interfaces';
 
 const environmentName = process.env.NODE_ENV || 'development';
-const environment: Environment = require(`./${environmentName}`);
+const environment: Environment = require(`./${environmentName}`).default;
 
-export default environment;
+export { environment };
