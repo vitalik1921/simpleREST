@@ -41,7 +41,10 @@ class App {
         this.express.use(passport.session());
         // Configure router
         this.express.use('/', routes_1.router);
-        this.db = mongoose.createConnection(environment_1.environment.mongoUrl);
+        this.db = mongoose.createConnection(environment_1.environment.mongoUrl, {
+            user: environment_1.environment.mongoUser,
+            pass: environment_1.environment.mongoPassword
+        });
         // Configure mongodb
         this.db.on('open', this.open);
         this.db.on('error', this.error);

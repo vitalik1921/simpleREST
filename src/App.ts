@@ -13,8 +13,6 @@ import { environment } from './environment';
 import { router } from './routes';
 import { localStrategy } from './config/localStrategy';
 
-
-
 class App {
   public express: any;
   public db: Connection;
@@ -51,7 +49,12 @@ class App {
 
     // Configure router
     this.express.use('/', router);
-    this.db = mongoose.createConnection(environment.mongoUrl);
+    this.db = mongoose.createConnection(environment.mongoUrl,
+      {
+        user: environment.mongoUser,
+        pass: environment.mongoPassword
+      }
+    );
 
     // Configure mongodb
     this.db.on('open', this.open);
