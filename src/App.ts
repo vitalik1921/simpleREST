@@ -3,16 +3,17 @@ import * as path from 'path';
 import * as bodyParser from 'body-parser';
 import * as methodOverride from 'method-override';
 import * as mongoose from 'mongoose';
+import { Connection } from 'mongoose';
 import * as passport from 'passport';
 import * as passportLocal from 'passport-local';
 
-import User from './models/User';
+import User, { IUser } from './models/User';
 
 import { environment } from './environment';
 import { router } from './routes';
-import { Connection } from 'mongoose';
+import { localStrategy } from './config/localStrategy';
 
-const LocalStrategy = passportLocal.Strategy;
+
 
 class App {
   public express: any;
@@ -34,15 +35,26 @@ class App {
     this.express.use(express.static(path.join(__dirname, '..', 'dist')));
 
     // Configure passport middleware
+    passport.use(localStrategy);
+    passport.serializeUser(function (user: IUser, done) {
+      done(null, user.id);
+    });
+    passport.deserializeUser(function (id, done) {
+      User.findById(id, function (err, user: IUser) {
+        err
+          ? done(err)
+          : done(null, user);
+      });
+    });
     this.express.use(passport.initialize());
     this.express.use(passport.session());
 
     // Configure router
-    // this.express.use('/', router);
+    this.express.use('/', router);
     this.db = mongoose.createConnection(environment.mongoUrl);
 
     // Configure mongodb
-    this.db.on('openUri', this.open);
+    this.db.on('open', this.open);
     this.db.on('error', this.error);
   }
 

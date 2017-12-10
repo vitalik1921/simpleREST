@@ -6,9 +6,10 @@ const bodyParser = require("body-parser");
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 const passport = require("passport");
-const passportLocal = require("passport-local");
+const User_1 = require("./models/User");
 const environment_1 = require("./environment");
-const LocalStrategy = passportLocal.Strategy;
+const routes_1 = require("./routes");
+const localStrategy_1 = require("./config/localStrategy");
 class App {
     constructor() {
         this.express = express();
@@ -25,13 +26,24 @@ class App {
         this.express.use(methodOverride('X-HTTP-Method-Override'));
         this.express.use(express.static(path.join(__dirname, '..', 'dist')));
         // Configure passport middleware
+        passport.use(localStrategy_1.localStrategy);
+        passport.serializeUser(function (user, done) {
+            done(null, user.id);
+        });
+        passport.deserializeUser(function (id, done) {
+            User_1.default.findById(id, function (err, user) {
+                err
+                    ? done(err)
+                    : done(null, user);
+            });
+        });
         this.express.use(passport.initialize());
         this.express.use(passport.session());
         // Configure router
-        // this.express.use('/', router);
+        this.express.use('/', routes_1.router);
         this.db = mongoose.createConnection(environment_1.environment.mongoUrl);
         // Configure mongodb
-        this.db.on('openUri', this.open);
+        this.db.on('open', this.open);
         this.db.on('error', this.error);
     }
     open() {

@@ -6,7 +6,7 @@ import User from './user';
 
 const router: Router = express.Router();
 
-router.use('/article', Article);
+router.use('/article', require('./article').default);
 router.use('/comment', Comment);
 router.use('/user', User);
 
