@@ -8,6 +8,7 @@ const localStrategy = new passportLocal.Strategy(
   },
   (username, password, done) => {
     User.findOne({ username: username }, function (err, user: IUser) {
+      console.log('we here', err);
       return err
         ? done(err)
         : user

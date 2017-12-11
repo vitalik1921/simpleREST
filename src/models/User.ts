@@ -8,7 +8,7 @@ export interface IUser extends mongoose.Document {
 
 const UserSchema = new mongoose.Schema({
     email: { type: String, unique: true },
-    password: String
+    password: { type: String }
 });
 
 export default mongoose.model('User', UserSchema);

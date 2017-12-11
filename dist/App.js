@@ -48,6 +48,12 @@ class App {
         // Configure mongodb
         this.db.on('open', this.open);
         this.db.on('error', this.error);
+        const user = new User_1.default({ email: 'vitalik.privat@gmail.com', password: 'O)i9u8y7' });
+        console.log('user', user);
+        user.save((err) => {
+            console.log('we here');
+            console.log(err);
+        });
     }
     open() {
         console.log('Connected to DB!');
