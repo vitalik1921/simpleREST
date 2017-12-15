@@ -1,15 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const express = require("express");
-const path = require("path");
 const bodyParser = require("body-parser");
+const express = require("express");
 const methodOverride = require("method-override");
-const mongoose = require("mongoose");
-const passport = require("passport");
-const User_1 = require("./models/User");
+const path = require("path");
 const environment_1 = require("./environment");
+const modules_1 = require("./modules");
 const routes_1 = require("./routes");
-const localStrategy_1 = require("./config/localStrategy");
 class App {
     constructor() {
         this.express = express();
@@ -25,41 +22,10 @@ class App {
         this.express.use(bodyParser.json());
         this.express.use(methodOverride('X-HTTP-Method-Override'));
         this.express.use(express.static(path.join(__dirname, '..', 'dist')));
-        // Configure passport middleware
-        passport.use(localStrategy_1.localStrategy);
-        passport.serializeUser(function (user, done) {
-            done(null, user.id);
-        });
-        passport.deserializeUser(function (id, done) {
-            User_1.default.findById(id, function (err, user) {
-                err
-                    ? done(err)
-                    : done(null, user);
-            });
-        });
-        this.express.use(passport.initialize());
-        this.express.use(passport.session());
+        // Use modules
+        modules_1.default(this.express);
         // Configure router
         this.express.use('/', routes_1.router);
-        this.db = mongoose.createConnection(environment_1.environment.mongoUrl, {
-            user: environment_1.environment.mongoUser,
-            pass: environment_1.environment.mongoPassword
-        });
-        // Configure mongodb
-        this.db.on('open', this.open);
-        this.db.on('error', this.error);
-        const user = new User_1.default({ email: 'vitalik.privat@gmail.com', password: 'O)i9u8y7' });
-        console.log('user', user);
-        user.save((err) => {
-            console.log('we here');
-            console.log(err);
-        });
-    }
-    open() {
-        console.log('Connected to DB!');
-    }
-    error(err) {
-        console.log('DB Connection error:', err.message);
     }
 }
 exports.default = new App().express;
