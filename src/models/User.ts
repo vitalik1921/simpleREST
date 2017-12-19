@@ -1,4 +1,3 @@
-import { IUser } from './User';
 import * as mongoose from 'mongoose';
 
 export interface IUser extends mongoose.Document {

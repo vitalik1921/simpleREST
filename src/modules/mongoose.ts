@@ -1,7 +1,9 @@
+import * as Promise from 'bluebird';
 import { Application } from 'express';
 import * as mongoose from 'mongoose';
-import * as Promise from 'bluebird';
+
 import { environment } from '../environment';
+import User, { IUser } from '../models/User';
 
 function gracefulExit(mongo: mongoose.Mongoose) {
   return () => mongo.connection.close(() => {
@@ -12,6 +14,7 @@ function gracefulExit(mongo: mongoose.Mongoose) {
 }
 
 export default function register(app: Application) {
+  console.log('Mongoose module started');
   (<any>mongoose).Promise = Promise;
 
   mongoose.connection.on('connected', () => {
@@ -19,24 +22,21 @@ export default function register(app: Application) {
       ` database on startup `);
   });
 
-  // If the connection throws an error
   mongoose.connection.on('error', (err: any) => {
     console.error(`Failed to connect to ${environment.name} ` +
       ` database on startup `, err);
   });
 
-  // When the connection is disconnected
   mongoose.connection.on('disconnected', () => {
     console.log(`Mongoose default connection to ${environment.name}` +
       ` database disconnected`);
   });
 
-  // If the Node process ends, close the Mongoose connection
   process.on('SIGINT', gracefulExit).on('SIGTERM', gracefulExit);
 
   // Connect to our MongoDB database using the MongoDB
   // connection URI from our predefined environment variable
-  mongoose.connect(environment.mongoUrl, (error: any) => {
+  mongoose.connect(environment.mongoUrl, { useMongoClient: true }, (error: any) => {
     if (error) {
       throw error;
     }

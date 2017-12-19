@@ -6,6 +6,7 @@ import { localStrategy } from '../config/localStrategy';
 import User, { IUser } from '../models/User';
 
 export default function register(app: Application) {
+  console.log('Passport module started');
   passport.use(localStrategy);
   passport.serializeUser(function (u: IUser, done) {
     done(null, u.id);

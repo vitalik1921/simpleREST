@@ -8,14 +8,14 @@ const router = express.Router();
 router.route('/login')
   .post((req, res, next) => {
     passport.authenticate('local',
-      function (err1, user, info) {
+      function (err1, token, info) {
         return err1
           ? next(err1)
-          : user
-            ? req.logIn(user, function (err2) {
+          : token
+            ? req.logIn(token, function (err2) {
               return err2
                 ? next(err2)
-                : res.status(200).send('LoggedIn');
+                : res.status(200).json(token);
             })
             : res.status(403).send('Error');
       }

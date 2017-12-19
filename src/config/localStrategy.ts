@@ -1,5 +1,6 @@
 import * as passportLocal from 'passport-local';
 import User, { IUser } from '../models/User';
+import AccessToken, { IAccessToken } from '../models/AccessToken';
 
 const localStrategy = new passportLocal.Strategy(
   {
@@ -7,15 +8,19 @@ const localStrategy = new passportLocal.Strategy(
     passwordField: 'password'
   },
   (username, password, done) => {
-    User.findOne({ username: username }, function (err, user: IUser) {
-      console.log('we here', err);
-      return err
-        ? done(err)
-        : user
-          ? password === user.password
-            ? done(null, user)
-            : done(null, false, { message: 'Incorrect password.' })
-          : done(null, false, { message: 'Incorrect username.' });
+    User.findOne({ email: username }, function (err, user: IUser) {
+      if (err) {
+        return done(err);
+      }
+      if (!user) {
+        return done(null, false, { message: 'Incorrect username' });
+      }
+      if (password !== user.password) {
+        return done(null, false, { message: 'Incorrect password' });
+      }
+      AccessToken.create({ userId: user._id }).then((accessToken) => {
+        return done(null, accessToken);
+      });
     });
   }
 );
