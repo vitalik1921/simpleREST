@@ -4,7 +4,7 @@ import { isLoggedIn } from './helpers';
 
 const router = express.Router();
 
-router.get('/', isLoggedIn, (req, res) => {
+router.get('/', (req, res) => {
   res.status(200).send('article');
 });
 

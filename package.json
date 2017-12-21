@@ -19,7 +19,7 @@
     "mongoose": "^4.13.6",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^4.4.0"
+    "passport-http-bearer": "^1.0.1"
   },
   "devDependencies": {
     "@types/body-parser": "^1.16.8",
@@ -28,9 +28,9 @@
     "@types/node": "7.0.22",
     "@types/passport": "^0.4.1",
     "@types/passport-local": "^1.0.32",
-    "@types/passport-local-mongoose": "^4.0.11",
     "@types/pug": "^2.0.4",
     "@types/request": "^2.0.8",
+    "@types/passport-http-bearer": "^1.0.31",
     "nodemon": "1.11.0",
     "supertest": "3.0.0",
     "tsc": "1.20150623.0",
